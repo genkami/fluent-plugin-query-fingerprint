@@ -1,5 +1,7 @@
 # fluent-plugin-query-fingerprint
 
+![](https://github.com/genkami/fluent-plugin-query-fingerprint/workflows/Test/badge.svg)
+
 [Fluentd](https://fluentd.org/) filter plugin to do something.
 
 TODO: write description for you plugin.
