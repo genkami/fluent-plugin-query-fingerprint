@@ -19,7 +19,7 @@ jobs:
           ruby-version: 2.6.3
 
       - name: Install Bundler
-        run: gem install bundler
+        run: gem install bundler -v '~>1.14'
 
       - name: Bundle Install
         run: bundle install --jobs 4 --retry 3
