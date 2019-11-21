@@ -9,6 +9,17 @@ jobs:
   build:
     runs-on: ubuntu-18.04
 
+    strategy:
+      matrix:
+        ruby:
+        - 2.2.10
+        - 2.3.8
+        - 2.4.9
+        - 2.5.7
+        - 2.6.5
+
+    name: Ruby ${{ matrix.ruby }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -16,7 +27,7 @@ jobs:
       - name: Setup Ruby
         uses: actions/setup-ruby@v1
         with:
-          ruby-version: 2.6.3
+          ruby-version: ${{ matrix.ruby }}
 
       - name: Install Bundler
         run: gem install bundler -v '~>1.14'
