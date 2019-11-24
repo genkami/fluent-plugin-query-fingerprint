@@ -43,6 +43,7 @@ module Fluent
           else
             query.gsub!(/[0-9+-][0-9a-f.xb+-]*/, "?")
           end
+          query.gsub!(/[xb.+-]\?/, "?")
           query
         end
       end

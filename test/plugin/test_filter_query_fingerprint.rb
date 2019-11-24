@@ -115,6 +115,14 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
       FP.fingerprint("SELECT * from a_table where a_value = 0b0011"),
       "SELECT * from a_table where a_value = ?"
     )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table where a_value = 12.3"),
+      "SELECT * from a_table where a_value = ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table where a_value = .1"),
+      "SELECT * from a_table where a_value = ?"
+    )
   end
 
   test "Fingerprinter.fingerprint with numbers in identifiers" do
