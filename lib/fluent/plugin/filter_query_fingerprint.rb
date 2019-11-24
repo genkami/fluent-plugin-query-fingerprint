@@ -22,6 +22,15 @@ module Fluent
 
       def filter(tag, time, record)
       end
+
+      module Fingerprinter
+        module_function
+
+        def fingerprint(query)
+          return "mysqldump" if query =~ %r#\ASELECT /\*!40001 SQL_NO_CACHE \*/ \* FROM `#
+          query
+        end
+      end
     end
   end
 end
