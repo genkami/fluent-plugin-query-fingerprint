@@ -43,9 +43,23 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with escaped double-quotes" do
+    assert_equal(
+      FP.fingerprint(%{SELECT "foo_\\"bar\\""}),
+      "SELECT ?"
+    )
+  end
+
   test "Fingerprinter.fingerprint with single-quoted strings" do
     assert_equal(
       FP.fingerprint(%{SELECT 'foo_bar'}),
+      "SELECT ?"
+    )
+  end
+
+  test "Fingerprinter.fingerprint with escaped single quotes" do
+    assert_equal(
+      FP.fingerprint(%{SELECT 'foo_\\'bar\\''}),
       "SELECT ?"
     )
   end
