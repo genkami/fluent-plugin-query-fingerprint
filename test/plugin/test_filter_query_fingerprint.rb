@@ -151,6 +151,21 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with NULLs" do
+    assert_equal(
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value IS NULL"),
+      "select * from a_table where a_value is ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value IS null"),
+      "select * from a_table where a_value is ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * FROM a_table WHERE nullable IS null"),
+      "select * from a_table where nullable is ?"
+    )
+  end
+
   private
 
   def create_driver(conf)

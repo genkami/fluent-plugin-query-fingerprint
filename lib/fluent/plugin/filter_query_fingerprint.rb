@@ -48,6 +48,8 @@ module Fluent
           query.strip!
           query.gsub!(/[ \n\t\r\f]+/, " ")
           query.downcase!
+
+          query.gsub!(/\bnull\b/i, "?")
           query
         end
       end
