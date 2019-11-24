@@ -25,7 +25,7 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
   test "Fingerprinter.fingerprint with admin command" do
     assert_equal(
       FP.fingerprint("administrator command: Ping"),
-      "administrator command: Ping"
+      "administrator command: ping"
     )
   end
 
@@ -39,115 +39,115 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
   test "Fingerprinter.fingerprint with double-quoted strings" do
     assert_equal(
       FP.fingerprint(%{SELECT "foo_bar"}),
-      "SELECT ?"
+      "select ?"
     )
   end
 
   test "Fingerprinter.fingerprint with escaped double-quotes" do
     assert_equal(
       FP.fingerprint(%{SELECT "foo_\\"bar\\""}),
-      "SELECT ?"
+      "select ?"
     )
   end
 
   test "Fingerprinter.fingerprint with single-quoted strings" do
     assert_equal(
       FP.fingerprint(%{SELECT 'foo_bar'}),
-      "SELECT ?"
+      "select ?"
     )
   end
 
   test "Fingerprinter.fingerprint with escaped single quotes" do
     assert_equal(
       FP.fingerprint(%{SELECT 'foo_\\'bar\\''}),
-      "SELECT ?"
+      "select ?"
     )
   end
 
   test "Fingerprinter.fingerprint with TRUE" do
     assert_equal(
-      FP.fingerprint("SELECT * from a_table where a_value = TRUE"),
-      "SELECT * from a_table where a_value = ?"
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value = TRUE"),
+      "select * from a_table where a_value = ?"
     )
     assert_equal(
-      FP.fingerprint("SELECT * from a_table where a_value = true"),
-      "SELECT * from a_table where a_value = ?"
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value = true"),
+      "select * from a_table where a_value = ?"
     )
     assert_equal(
-      FP.fingerprint("SELECT * from a_table where true_column = true"),
-      "SELECT * from a_table where true_column = ?"
+      FP.fingerprint("SELECT * FROM a_table WHERE true_column = true"),
+      "select * from a_table where true_column = ?"
     )
   end
 
   test "Fingerprinter.fingerprint with FALSE" do
     assert_equal(
-      FP.fingerprint("SELECT * from a_table where a_value = FALSE"),
-      "SELECT * from a_table where a_value = ?"
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value = FALSE"),
+      "select * from a_table where a_value = ?"
     )
     assert_equal(
-      FP.fingerprint("SELECT * from a_table where a_value = false"),
-      "SELECT * from a_table where a_value = ?"
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value = false"),
+      "select * from a_table where a_value = ?"
     )
     assert_equal(
-      FP.fingerprint("SELECT * from a_table where false_column = false"),
-      "SELECT * from a_table where false_column = ?"
+      FP.fingerprint("SELECT * FROM a_table WHERE false_column = false"),
+      "select * from a_table where false_column = ?"
     )
   end
 
   test "Fingerprinter.fingerprint with numbers" do
     assert_equal(
-      FP.fingerprint("SELECT * from a_table where a_value = 123"),
-      "SELECT * from a_table where a_value = ?"
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value = 123"),
+      "select * from a_table where a_value = ?"
     )
     assert_equal(
-      FP.fingerprint("SELECT * from a_table where a_value = +123"),
-      "SELECT * from a_table where a_value = ?"
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value = +123"),
+      "select * from a_table where a_value = ?"
     )
     assert_equal(
-      FP.fingerprint("SELECT * from a_table where a_value = -123"),
-      "SELECT * from a_table where a_value = ?"
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value = -123"),
+      "select * from a_table where a_value = ?"
     )
     assert_equal(
-      FP.fingerprint("SELECT * from a_table where a_value = 0x12ab"),
-      "SELECT * from a_table where a_value = ?"
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value = 0x12ab"),
+      "select * from a_table where a_value = ?"
     )
     assert_equal(
-      FP.fingerprint("SELECT * from a_table where a_value = 0b0011"),
-      "SELECT * from a_table where a_value = ?"
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value = 0b0011"),
+      "select * from a_table where a_value = ?"
     )
     assert_equal(
-      FP.fingerprint("SELECT * from a_table where a_value = 12.3"),
-      "SELECT * from a_table where a_value = ?"
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value = 12.3"),
+      "select * from a_table where a_value = ?"
     )
     assert_equal(
-      FP.fingerprint("SELECT * from a_table where a_value = .1"),
-      "SELECT * from a_table where a_value = ?"
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value = .1"),
+      "select * from a_table where a_value = ?"
     )
   end
 
   test "Fingerprinter.fingerprint with numbers in identifiers" do
     assert_equal(
-      FP.fingerprint("SELECT * from a_table0 where a_value1 = 123"),
-      "SELECT * from a_table? where a_value? = ?"
+      FP.fingerprint("SELECT * FROM a_table0 WHERE a_value1 = 123"),
+      "select * from a_table? where a_value? = ?"
     )
     assert_equal(
-      FP.fingerprint("SELECT * from a_table0 where a_value1 = 123",
+      FP.fingerprint("SELECT * FROM a_table0 WHERE a_value1 = 123",
                      perserve_embedded_numbers: true),
-      "SELECT * from a_table0 where a_value1 = ?"
+      "select * from a_table0 where a_value1 = ?"
     )
   end
 
   test "Fingerprinter.fingerprint with leading/trailing whitespaces" do
     assert_equal(
-      FP.fingerprint("  \t\nSELECT * from a_table where a_value = 123   \t\n"),
-      "SELECT * from a_table where a_value = ?"
+      FP.fingerprint("  \t\nSELECT * FROM a_table WHERE a_value = 123   \t\n"),
+      "select * from a_table where a_value = ?"
     )
   end
 
   test "Fingerprinter.fingerprint with whitespaces" do
     assert_equal(
-      FP.fingerprint("SELECT *\tfrom a_table  \n  \fwhere\r\na_value = 123"),
-      "SELECT * from a_table where a_value = ?"
+      FP.fingerprint("SELECT *\tFROM a_table  \n  \fWHERE\r\na_value = 123"),
+      "select * from a_table where a_value = ?"
     )
   end
 
