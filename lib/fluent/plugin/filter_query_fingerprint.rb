@@ -35,6 +35,8 @@ module Fluent
           query.gsub!(/\\["']/, "")
           query.gsub!(/".*?"/s, "?")
           query.gsub!(/'.*?'/s, "?")
+
+          query.gsub!(/\btrue\b|\bfalse\b/i, "?")
           query
         end
       end

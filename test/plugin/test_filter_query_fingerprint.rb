@@ -64,6 +64,36 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with TRUE" do
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table where a_value = TRUE"),
+      "SELECT * from a_table where a_value = ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table where a_value = true"),
+      "SELECT * from a_table where a_value = ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table where true_column = true"),
+      "SELECT * from a_table where true_column = ?"
+    )
+  end
+
+  test "Fingerprinter.fingerprint with FALSE" do
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table where a_value = FALSE"),
+      "SELECT * from a_table where a_value = ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table where a_value = false"),
+      "SELECT * from a_table where a_value = ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table where false_column = false"),
+      "SELECT * from a_table where false_column = ?"
+    )
+  end
+
   private
 
   def create_driver(conf)
