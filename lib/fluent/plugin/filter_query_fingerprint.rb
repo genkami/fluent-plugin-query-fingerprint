@@ -51,7 +51,7 @@ module Fluent
 
           query.gsub!(/\bnull\b/i, "?")
 
-          query.gsub!(/in(?:\s*\([\s?,]*\))/, "in(?+)")
+          query.gsub!(/(in|values?)(?:[\s,]*\([\s?,]*\))+/, "\\1(?+)")
           query
         end
       end

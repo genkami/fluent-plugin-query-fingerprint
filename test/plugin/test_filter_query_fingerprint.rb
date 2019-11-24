@@ -177,6 +177,21 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with `VALUES` function" do
+    assert_equal(
+      FP.fingerprint("INSERT INTO a_table (foo, bar) VALUES (1, 'aaa')"),
+      "insert into a_table (foo, bar) values(?+)"
+    )
+    assert_equal(
+      FP.fingerprint("INSERT INTO a_table (foo, bar) VALUES (1, 'aaa'), (2, 'bbb')"),
+      "insert into a_table (foo, bar) values(?+)"
+    )
+    assert_equal(
+      FP.fingerprint("INSERT INTO a_table (foo, bar) VALUE (1, 'aaa'), (2, 'bbb')"),
+      "insert into a_table (foo, bar) value(?+)"
+    )
+  end
+
   private
 
   def create_driver(conf)
