@@ -175,6 +175,10 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
       FP.fingerprint("SELECT * FROM a_table WHERE a_value IN (1, 2, 3)"),
       "select * from a_table where a_value in(?+)"
     )
+    assert_equal(
+      FP.fingerprint("SELECT SIN(3.14)"),
+      "select sin(?)"
+    )
   end
 
   test "Fingerprinter.fingerprint with `VALUES` function" do
@@ -189,6 +193,10 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     assert_equal(
       FP.fingerprint("INSERT INTO a_table (foo, bar) VALUE (1, 'aaa'), (2, 'bbb')"),
       "insert into a_table (foo, bar) value(?+)"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT my_function_values(1, 2)"),
+      "select my_function_values(?, ?)"
     )
   end
 
