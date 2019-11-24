@@ -117,6 +117,18 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with numbers in identifiers" do
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table0 where a_value1 = 123"),
+      "SELECT * from a_table? where a_value? = ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table0 where a_value1 = 123",
+                     perserve_embedded_numbers: true),
+      "SELECT * from a_table0 where a_value1 = ?"
+    )
+  end
+
   private
 
   def create_driver(conf)

@@ -26,7 +26,7 @@ module Fluent
       module Fingerprinter
         module_function
 
-        def fingerprint(query)
+        def fingerprint(query, perserve_embedded_numbers: false)
           return "mysqldump" if query =~ %r#\ASELECT /\*!40001 SQL_NO_CACHE \*/ \* FROM `#
           return "percona-toolkit" if query =~ %r#\*\w+\.\w+:[0-9]/[0-9]\*/#
 
@@ -38,7 +38,11 @@ module Fluent
 
           query.gsub!(/\btrue\b|\bfalse\b/i, "?")
 
-          query.gsub!(/[0-9+-][0-9a-f.xb+-]*/, "?")
+          if perserve_embedded_numbers
+            query.gsub!(/\b[0-9+-][0-9a-f.xb+-]*/, "?")
+          else
+            query.gsub!(/[0-9+-][0-9a-f.xb+-]*/, "?")
+          end
           query
         end
       end
