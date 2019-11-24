@@ -44,6 +44,9 @@ module Fluent
             query.gsub!(/[0-9+-][0-9a-f.xb+-]*/, "?")
           end
           query.gsub!(/[xb.+-]\?/, "?")
+
+          query.strip!
+          query.gsub!(/[ \n\t\r\f]+/, " ")
           query
         end
       end

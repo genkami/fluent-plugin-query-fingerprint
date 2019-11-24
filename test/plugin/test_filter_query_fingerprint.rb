@@ -137,6 +137,20 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with leading/trailing whitespaces" do
+    assert_equal(
+      FP.fingerprint("  \t\nSELECT * from a_table where a_value = 123   \t\n"),
+      "SELECT * from a_table where a_value = ?"
+    )
+  end
+
+  test "Fingerprinter.fingerprint with whitespaces" do
+    assert_equal(
+      FP.fingerprint("SELECT *\tfrom a_table  \n  \fwhere\r\na_value = 123"),
+      "SELECT * from a_table where a_value = ?"
+    )
+  end
+
   private
 
   def create_driver(conf)
