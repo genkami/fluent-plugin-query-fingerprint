@@ -50,6 +50,8 @@ module Fluent
           query.downcase!
 
           query.gsub!(/\bnull\b/i, "?")
+
+          query.gsub!(/in(?:\s*\([\s?,]*\))/, "in(?+)")
           query
         end
       end

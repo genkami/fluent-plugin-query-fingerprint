@@ -166,6 +166,17 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with `IN` operator" do
+    assert_equal(
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value IN (1)"),
+      "select * from a_table where a_value in(?+)"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * FROM a_table WHERE a_value IN (1, 2, 3)"),
+      "select * from a_table where a_value in(?+)"
+    )
+  end
+
   private
 
   def create_driver(conf)
