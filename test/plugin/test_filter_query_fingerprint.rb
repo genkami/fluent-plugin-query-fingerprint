@@ -29,6 +29,13 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with `USE`" do
+    assert_equal(
+      FP.fingerprint("USE `the_table`"),
+      "use ?"
+    )
+  end
+
   private
 
   def create_driver(conf)
