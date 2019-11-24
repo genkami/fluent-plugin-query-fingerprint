@@ -233,6 +233,12 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
       "(select * from foo where bar = ? /*repeat union*/) "\
       "on hoge.id = foo.hoge_id"
     )
+
+    assert_equal(
+      FP.fingerprint("SELECT MY_FUNC_SELECT (1) "\
+                     "UNION SELECT (1)"),
+      "select my_func_select (?) union select (?)"
+    )
   end
 
   private
