@@ -54,6 +54,8 @@ module Fluent
           query.gsub!(/\b(in|values?)(?:[\s,]*\([\s?,]*\))+/, "\\1(?+)")
 
           query.gsub!(/\b(select\s.*?)(?:(\sunion(?:\sall)?)\s\1)+/, "\\1 /*repeat\\2*/")
+
+          query.gsub!(/\blimit \?(?:, ?\?| offset \?)/, "limit ?")
           query
         end
       end

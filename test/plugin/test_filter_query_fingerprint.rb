@@ -241,6 +241,25 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with LIMIT clauses" do
+    assert_equal(
+      FP.fingerprint("SELECT * FROM a_table LIMIT 10"),
+      "select * from a_table limit ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * FROM a_table LIMIT 5, 10"),
+      "select * from a_table limit ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * FROM a_table LIMIT 5,10"),
+      "select * from a_table limit ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * FROM a_table LIMIT 10 OFFSET 5"),
+      "select * from a_table limit ?"
+    )
+  end
+
   private
 
   def create_driver(conf)
