@@ -31,6 +31,8 @@ module Fluent
           return "percona-toolkit" if query =~ %r#\*\w+\.\w+:[0-9]/[0-9]\*/#
 
           return query if query.gsub!(/\Ause \S+\Z/i, "use ?")
+
+          query.gsub!(/".*?"/s, "?")
           query
         end
       end
