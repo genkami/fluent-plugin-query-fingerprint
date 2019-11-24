@@ -22,6 +22,13 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with admin command" do
+    assert_equal(
+      FP.fingerprint("administrator command: Ping"),
+      "administrator command: Ping"
+    )
+  end
+
   private
 
   def create_driver(conf)
