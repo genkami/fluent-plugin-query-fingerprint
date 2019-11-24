@@ -200,6 +200,41 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with UNIONing similar queries" do
+    assert_equal(
+      FP.fingerprint("SELECT * FROM foo WHERE bar = 1 "\
+                     "UNION SELECT * FROM foo WHERE bar = 2"),
+      "select * from foo where bar = ? /*repeat union*/"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * FROM foo WHERE bar = 1 "\
+                     "UNION SELECT * FROM foo WHERE bar = 2 "\
+                     "UNION SELECT * FROM foo WHERE bar = 3"),
+      "select * from foo where bar = ? /*repeat union*/"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * FROM foo WHERE bar = 1 "\
+                     "UNION ALL SELECT * FROM foo WHERE bar = 2"),
+      "select * from foo where bar = ? /*repeat union all*/"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * FROM foo WHERE bar = 1 "\
+                     "UNION SELECT * FROM foo WHERE bar = 2 "\
+                     "UNION ALL SELECT * FROM foo WHERE bar = 3"),
+      "select * from foo where bar = ? /*repeat union all*/"
+    )
+
+    assert_equal(
+      FP.fingerprint("SELECT * FROM hoge INNER JOIN "\
+                     "(SELECT * FROM foo WHERE bar = 1 "\
+                     "UNION SELECT * FROM foo WHERE bar = 2) "\
+                     "ON hoge.id = foo.hoge_id"),
+      "select * from hoge inner join "\
+      "(select * from foo where bar = ? /*repeat union*/) "\
+      "on hoge.id = foo.hoge_id"
+    )
+  end
+
   private
 
   def create_driver(conf)
