@@ -94,6 +94,29 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with numbers" do
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table where a_value = 123"),
+      "SELECT * from a_table where a_value = ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table where a_value = +123"),
+      "SELECT * from a_table where a_value = ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table where a_value = -123"),
+      "SELECT * from a_table where a_value = ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table where a_value = 0x12ab"),
+      "SELECT * from a_table where a_value = ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table where a_value = 0b0011"),
+      "SELECT * from a_table where a_value = ?"
+    )
+  end
+
   private
 
   def create_driver(conf)
