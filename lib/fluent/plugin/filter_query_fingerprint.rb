@@ -28,6 +28,7 @@ module Fluent
 
         def fingerprint(query)
           return "mysqldump" if query =~ %r#\ASELECT /\*!40001 SQL_NO_CACHE \*/ \* FROM `#
+          return "percona-toolkit" if query =~ %r#\*\w+\.\w+:[0-9]/[0-9]\*/#
           query
         end
       end

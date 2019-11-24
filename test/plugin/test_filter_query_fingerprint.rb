@@ -15,6 +15,13 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with percona-toolkit" do
+    assert_equal(
+      FP.fingerprint("REPLACE /*foo.bar:3/3*/ INTO checksum.checksum"),
+      "percona-toolkit"
+    )
+  end
+
   private
 
   def create_driver(conf)
