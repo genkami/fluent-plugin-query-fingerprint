@@ -260,6 +260,33 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with `ORDER BY` clauses" do
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table ORDER BY foo"),
+      "select * from a_table order by foo"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table ORDER BY foo ASC"),
+      "select * from a_table order by foo"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table ORDER BY foo DESC"),
+      "select * from a_table order by foo desc"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table ORDER BY foo ASC, bar ASC"),
+      "select * from a_table order by foo, bar"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table ORDER BY foo ASC, bar DESC, baz ASC"),
+      "select * from a_table order by foo, bar desc, baz"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * from a_table ORDER BY foo ASC, bar DESC, baz, quux ASC"),
+      "select * from a_table order by foo, bar desc, baz, quux"
+    )
+  end
+
   private
 
   def create_driver(conf)

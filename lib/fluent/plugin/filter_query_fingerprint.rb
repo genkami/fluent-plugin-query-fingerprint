@@ -56,6 +56,11 @@ module Fluent
           query.gsub!(/\b(select\s.*?)(?:(\sunion(?:\sall)?)\s\1)+/, "\\1 /*repeat\\2*/")
 
           query.gsub!(/\blimit \?(?:, ?\?| offset \?)/, "limit ?")
+
+          if query =~ /\border by/
+            query.gsub!(/\G(.+?)\s+asc/, "\\1")
+          end
+
           query
         end
       end
