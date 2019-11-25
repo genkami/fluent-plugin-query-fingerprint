@@ -30,6 +30,10 @@ module Fluent
           return "mysqldump" if query =~ %r#\ASELECT /\*!40001 SQL_NO_CACHE \*/ \* FROM `#
           return "percona-toolkit" if query =~ %r#\*\w+\.\w+:[0-9]/[0-9]\*/#
 
+          if match = /\A((?:INSERT|REPLACE)(?: IGNORE)?\s+INTO.+?VALUES\s*\(.*?\))\s*,\s*\(/im.match(query)
+            query = match.captures.first
+          end
+
           return query if query.gsub!(/\Ause \S+\Z/i, "use ?")
 
           query.gsub!(/\\["']/, "")
