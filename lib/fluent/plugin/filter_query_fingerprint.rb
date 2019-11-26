@@ -29,6 +29,9 @@ module Fluent
         def fingerprint(query, perserve_embedded_numbers: false)
           return "mysqldump" if query =~ %r#\ASELECT /\*!40001 SQL_NO_CACHE \*/ \* FROM `#
           return "percona-toolkit" if query =~ %r#\*\w+\.\w+:[0-9]/[0-9]\*/#
+          if match = /\A\s*(call\s+\S+)\(/i.match(query)
+            return match.captures.first.downcase!
+          end
 
           if match = /\A((?:INSERT|REPLACE)(?: IGNORE)?\s+INTO.+?VALUES\s*\(.*?\))\s*,\s*\(/im.match(query)
             query = match.captures.first

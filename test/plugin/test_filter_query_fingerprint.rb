@@ -287,6 +287,17 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with `CALL` procedures" do
+    assert_equal(
+      FP.fingerprint("CALL func(@foo, @bar)"),
+      "call func"
+    )
+    assert_equal(
+      FP.fingerprint("  CALL func(@foo, @bar)"),
+      "call func"
+    )
+  end
+
   private
 
   def create_driver(conf)
