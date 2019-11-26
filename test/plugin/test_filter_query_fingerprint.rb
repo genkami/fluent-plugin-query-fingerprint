@@ -298,6 +298,29 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with multi-line comments" do
+    assert_equal(
+      FP.fingerprint("SELECT hoge /* comment */ FROM fuga"),
+      "select hoge from fuga"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT hoge /* this is \n"\
+                     "a multi-line comment */ FROM fuga"),
+      "select hoge from fuga"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT hoge /* comment */ FROM /* another comment */ fuga"),
+      "select hoge from fuga"
+    )
+  end
+
+  test "Fingerprinter.fingerprint with multi-line comments followed by exclamation marks" do
+    assert_equal(
+      FP.fingerprint("SELECT /*! STRAIGHT_JOIN */ hoge from fuga, foo"),
+      "select /*! straight_join */ hoge from fuga, foo"
+    )
+  end
+
   private
 
   def create_driver(conf)

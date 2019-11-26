@@ -37,6 +37,8 @@ module Fluent
             query = match.captures.first
           end
 
+          query.gsub!(%r#/\*[^!].*?\*/#m, "")
+
           return query if query.gsub!(/\Ause \S+\Z/i, "use ?")
 
           query.gsub!(/\\["']/, "")
