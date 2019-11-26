@@ -20,13 +20,19 @@ module Fluent
     class QueryFingerprintFilter < Fluent::Plugin::Filter
       Fluent::Plugin.register_filter("query_fingerprint", self)
 
+      config_param :query_key, :string
+      config_param :fingerprint_key, :string
+      config_param :preserve_embedded_numbers, :bool, default: false
+
       def filter(tag, time, record)
+        record[@fingerprint_key] = Fingerprinter.fingerprint(record[@query_key], preserve_embedded_numbers: @preserve_embedded_numbers)
+        record
       end
 
       module Fingerprinter
         module_function
 
-        def fingerprint(query, perserve_embedded_numbers: false)
+        def fingerprint(query, preserve_embedded_numbers: false)
           return "mysqldump" if query =~ %r#\ASELECT /\*!40001 SQL_NO_CACHE \*/ \* FROM `#
           return "percona-toolkit" if query =~ %r#\*\w+\.\w+:[0-9]/[0-9]\*/#
           if match = /\A\s*(call\s+\S+)\(/i.match(query)
@@ -48,7 +54,7 @@ module Fluent
 
           query.gsub!(/\btrue\b|\bfalse\b/i, "?")
 
-          if perserve_embedded_numbers
+          if preserve_embedded_numbers
             query.gsub!(/\b[0-9+-][0-9a-f.xb+-]*/, "?")
           else
             query.gsub!(/[0-9+-][0-9a-f.xb+-]*/, "?")

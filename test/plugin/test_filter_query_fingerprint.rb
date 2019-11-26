@@ -8,6 +8,60 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     Fluent::Test.setup
   end
 
+  sub_test_case "filter" do
+    test "query transformation" do
+      conf = %[
+        query_key query
+        fingerprint_key query_fingerprint
+      ]
+      d = create_driver(conf)
+      d.run(default_tag: "input.access") do
+        d.feed({"query" => "SELECT * FROM hoge WHERE fuga = 123"})
+        d.feed({"query" => "SELECT * FROM `hoge1`.`fuga2` WHERE `piyo3` = 123"})
+      end
+      filtered = d.filtered_records
+      assert_equal "select * from hoge where fuga = ?", filtered[0]["query_fingerprint"]
+      assert_equal "select * from `hoge?`.`fuga?` where `piyo?` = ?", filtered[1]["query_fingerprint"]
+    end
+
+    test "query transformation with perserve_embedded_numbers enabled" do
+      conf = %[
+        query_key query
+        fingerprint_key query_fingerprint
+        preserve_embedded_numbers true
+      ]
+      d = create_driver(conf)
+      d.run(default_tag: "input.access") do
+        d.feed({"query" => "SELECT * FROM hoge WHERE fuga = 123"})
+        d.feed({"query" => "SELECT * FROM `hoge1`.`fuga2` WHERE `piyo3` = 123"})
+      end
+      filtered = d.filtered_records
+      assert_equal "select * from hoge where fuga = ?", filtered[0]["query_fingerprint"]
+      assert_equal "select * from `hoge1`.`fuga2` where `piyo3` = ?", filtered[1]["query_fingerprint"]
+    end
+  end
+
+  sub_test_case "configure" do
+    test "missing query_key" do
+      conf = %[
+        fingerprint_key query_fingerprint
+      ]
+      assert_raise(Fluent::ConfigError) do
+        create_driver(conf)
+      end
+    end
+
+    test "missing fingerprint_key" do
+      conf = %[
+        query_key query
+      ]
+      assert_raise(Fluent::ConfigError) do
+        create_driver(conf)
+      end
+    end
+  end
+
+
   sub_test_case "Fingerprinter.fingerprint" do
     test "mysqldump" do
       assert_equal(
@@ -133,7 +187,7 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
       )
       assert_equal(
         FP.fingerprint("SELECT * FROM a_table0 WHERE a_value1 = 123",
-                       perserve_embedded_numbers: true),
+                       preserve_embedded_numbers: true),
         "select * from a_table0 where a_value1 = ?"
       )
     end
