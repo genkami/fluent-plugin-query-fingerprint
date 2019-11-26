@@ -33,6 +33,7 @@ module Fluent
         module_function
 
         def fingerprint(query, preserve_embedded_numbers: false)
+          query = query.dup
           return "mysqldump" if query =~ %r#\ASELECT /\*!40001 SQL_NO_CACHE \*/ \* FROM `#
           return "percona-toolkit" if query =~ %r#\*\w+\.\w+:[0-9]/[0-9]\*/#
           if match = /\A\s*(call\s+\S+)\(/i.match(query)

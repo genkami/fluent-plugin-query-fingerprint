@@ -63,6 +63,12 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
 
 
   sub_test_case "Fingerprinter.fingerprint" do
+    test "no side effect" do
+      q = "SELECT * FROM hoge WHERE fuga = 1"
+      FP.fingerprint(q)
+      assert_equal(q, "SELECT * FROM hoge WHERE fuga = 1")
+    end
+
     test "mysqldump" do
       assert_equal(
         FP.fingerprint("SELECT /*!40001 SQL_NO_CACHE */ * FROM `the_table`"),
