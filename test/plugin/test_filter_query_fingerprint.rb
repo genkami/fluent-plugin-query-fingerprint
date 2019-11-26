@@ -321,6 +321,27 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
     )
   end
 
+  test "Fingerprinter.fingerprint with one-line comments" do
+    assert_equal(
+      FP.fingerprint("SELECT * FROM hoge -- comment"),
+      "select * from hoge"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * FROM hoge -- comment\n"\
+                     "WHERE fuga = 1"),
+      "select * from hoge where fuga = ?"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * FROM hoge # comment"),
+      "select * from hoge"
+    )
+    assert_equal(
+      FP.fingerprint("SELECT * FROM hoge # comment\n"\
+                     "WHERE fuga = 1"),
+      "select * from hoge where fuga = ?"
+    )
+  end
+
   private
 
   def create_driver(conf)

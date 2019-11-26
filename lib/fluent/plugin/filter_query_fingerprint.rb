@@ -38,6 +38,7 @@ module Fluent
           end
 
           query.gsub!(%r#/\*[^!].*?\*/#m, "")
+          query.gsub!(/(?:--|#)[^\r\n]*(?=[\r\n]|\Z)/, "")
 
           return query if query.gsub!(/\Ause \S+\Z/i, "use ?")
 
