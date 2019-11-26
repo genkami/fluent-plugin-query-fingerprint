@@ -2,9 +2,9 @@
 
 ![](https://github.com/genkami/fluent-plugin-query-fingerprint/workflows/Test/badge.svg)
 
-[Fluentd](https://fluentd.org/) filter plugin to do something.
+[Fluentd](https://fluentd.org/) filter plugin to normalize SQL queires.
 
-TODO: write description for you plugin.
+This plugin does something like [pt-fingerprint](https://github.com/percona/percona-toolkit) to specific fields.
 
 ## Installation
 
@@ -30,13 +30,19 @@ $ bundle
 
 ## Configuration
 
-You can generate configuration template:
+* **query_key** (string)(required): The field name that contain queries to be fingerprinted.
+* **fingerprint_key** (string)(required): The field name to output fingerprint.
+* **preserve_embedded_numbers** (boolean)(optional): If it is set to true, the filter does not replace numbers in identifiers. Deafults to false.
+
+### Example Configuration
 
 ```
-$ fluent-plugin-config-format filter query-fingerprint
+<filter pattern>
+  @type query_fingerprint
+  query_key sql
+  fingerprint_key fingerprint
+</filter>
 ```
-
-You can copy and paste generated documents here.
 
 ## Copyright
 
