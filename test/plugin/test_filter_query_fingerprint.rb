@@ -402,6 +402,13 @@ class QueryFingerprintFilterTest < Test::Unit::TestCase
         "select * from hoge where fuga = ?"
       )
     end
+
+    test "unicode" do
+      assert_equal(
+        FP.fingerprint("SELECT * FROM hoge where value = 'ほげふが'"),
+        "select * from hoge where value = ?"
+      )
+    end
   end
 
   private

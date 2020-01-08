@@ -50,8 +50,8 @@ module Fluent
           return query if query.gsub!(/\Ause \S+\Z/i, "use ?")
 
           query.gsub!(/\\["']/, "")
-          query.gsub!(/".*?"/s, "?")
-          query.gsub!(/'.*?'/s, "?")
+          query.gsub!(/".*?"/m, "?")
+          query.gsub!(/'.*?'/m, "?")
 
           query.gsub!(/\btrue\b|\bfalse\b/i, "?")
 
